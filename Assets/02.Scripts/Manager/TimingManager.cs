@@ -11,11 +11,19 @@ public class TimingManager : MonoBehaviour
     Vector2[] timingBoxs = null;
 
     EffectManager theEffect;
+    ScoreManager theScoreManager;
+    ComboManager theComboManger;
+    StageManager theStageManager;
+    PlayerController thePlayer;
 
     // Start is called before the first frame update
     void Start()
     {
         theEffect = FindObjectOfType<EffectManager>();
+        theScoreManager = FindObjectOfType<ScoreManager>();
+        theComboManger = FindObjectOfType<ComboManager>();
+        theStageManager = FindObjectOfType<StageManager>();
+        thePlayer = FindObjectOfType<PlayerController>();
 
         // 타이밍 박스 설정.
         timingBoxs = new Vector2[timingRect.Length];
@@ -27,7 +35,7 @@ public class TimingManager : MonoBehaviour
         }
     }
 
-    public void CheckTiming()
+    public bool CheckTiming()
     {
         for(int i = 0; i < boxNoteList.Count; i++)
         {
@@ -43,11 +51,46 @@ public class TimingManager : MonoBehaviour
                     // 이펙트 연출
                     if (x < timingBoxs.Length - 1) // Bad 일때는 effect 안나오게끔.
                         theEffect.noteHitEffect();
-                    theEffect.JudgementEffect(x);
-                    return;
+                    
+                    
+                    if (CheckCanNextPlate()) // 처음 밟아보는 발판 !
+                    {
+                        // 점수 증가
+                        theScoreManager.IncreaseScore(x);
+                        // 스테이지 생성.
+                        theStageManager.ShowNextPlates();
+                        theEffect.JudgementEffect(x); // perfect ~ good 판정
+                    }
+                    else // 이미 한번 밟았던 발판 !
+                    {
+                        theEffect.JudgementEffect(5); // normal 판정
+                    }
+
+                    return true;
                 }
             }
         }
+        // Miss 판정.
+        theComboManger.ResetCombo();
         theEffect.JudgementEffect(4);
+        return false;
+    }
+
+    bool CheckCanNextPlate()
+    {
+        if(Physics.Raycast(thePlayer.destPos, Vector3.down, out RaycastHit t_hitInfo, 1.1f))
+        {
+            if(t_hitInfo.transform.CompareTag("BasicPlate"))
+            {
+                BasicPlate t_plate = t_hitInfo.transform.GetComponent<BasicPlate>();
+                if (t_plate.flag)
+                {
+                    t_plate.flag = false; // 한번밟은 발판은 제외시키기위함.
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 }
