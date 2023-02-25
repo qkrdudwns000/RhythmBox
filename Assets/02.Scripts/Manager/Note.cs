@@ -8,9 +8,12 @@ public class Note : MonoBehaviour
 
     UnityEngine.UI.Image noteImage;
 
-    private void Start()
+    private void OnEnable()
     {
-        noteImage = GetComponent<UnityEngine.UI.Image>();
+        if(noteImage == null)
+            noteImage = GetComponent<UnityEngine.UI.Image>();
+
+        noteImage.enabled = true;
     }
 
     // Update is called once per frame

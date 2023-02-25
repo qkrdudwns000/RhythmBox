@@ -8,7 +8,6 @@ public class NoteManager : MonoBehaviour
     double currentTime = 0d;
 
     [SerializeField] Transform tfNoteAppear;
-    [SerializeField] GameObject goNote;
 
     TimingManager theTimingManger;
     EffectManager theEffectmanager;
@@ -26,8 +25,10 @@ public class NoteManager : MonoBehaviour
 
         if (currentTime >= 60d / bpm)
         {
-            GameObject t_note = Instantiate(goNote, tfNoteAppear.position, Quaternion.identity);
-            t_note.transform.SetParent(this.transform); // note프리팹이 canvas안에 있어야지 보이므로 부모설정.
+            GameObject t_note = ObjectPool.inst.noteQueue.Dequeue();
+            t_note.transform.position = tfNoteAppear.position;
+            t_note.SetActive(true);
+            
             theTimingManger.boxNoteList.Add(t_note);
             currentTime -= 60d / bpm;
         }
@@ -40,7 +41,9 @@ public class NoteManager : MonoBehaviour
             if(collision.GetComponent<Note>().GetNoteFlag())
                 theEffectmanager.JudgementEffect(4);
             theTimingManger.boxNoteList.Remove(collision.gameObject);
-            Destroy(collision.gameObject);
+
+            ObjectPool.inst.noteQueue.Enqueue(collision.gameObject);
+            collision.gameObject.SetActive(false);
         }
     }
 }
