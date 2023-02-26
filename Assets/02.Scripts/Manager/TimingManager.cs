@@ -6,6 +6,8 @@ public class TimingManager : MonoBehaviour
 {
     public List<GameObject> boxNoteList = new List<GameObject>();
 
+    int[] judgementRecord = new int[5];
+
     [SerializeField] Transform Center = null; 
     [SerializeField] RectTransform[] timingRect = null;
     Vector2[] timingBoxs = null;
@@ -60,6 +62,7 @@ public class TimingManager : MonoBehaviour
                         // 스테이지 생성.
                         theStageManager.ShowNextPlates();
                         theEffect.JudgementEffect(x); // perfect ~ good 판정
+                        judgementRecord[x]++; // 판정기록
                     }
                     else // 이미 한번 밟았던 발판 !
                     {
@@ -73,6 +76,7 @@ public class TimingManager : MonoBehaviour
         // Miss 판정.
         theComboManger.ResetCombo();
         theEffect.JudgementEffect(4);
+        MissRecord();
         return false;
     }
 
@@ -92,5 +96,15 @@ public class TimingManager : MonoBehaviour
         }
 
         return false;
+    }
+
+    public int[] GetJudgementRecord()
+    {
+        return judgementRecord;
+    }
+
+    public void MissRecord()
+    {
+        judgementRecord[4]++; // miss 판정기록.
     }
 }
