@@ -17,6 +17,7 @@ public class TimingManager : MonoBehaviour
     ComboManager theComboManger;
     StageManager theStageManager;
     PlayerController thePlayer;
+    StatusManager theStatusManager;
 
     // Start is called before the first frame update
     void Start()
@@ -26,6 +27,7 @@ public class TimingManager : MonoBehaviour
         theComboManger = FindObjectOfType<ComboManager>();
         theStageManager = FindObjectOfType<StageManager>();
         thePlayer = FindObjectOfType<PlayerController>();
+        theStatusManager = FindObjectOfType<StatusManager>();
 
         // 타이밍 박스 설정.
         timingBoxs = new Vector2[timingRect.Length];
@@ -57,12 +59,11 @@ public class TimingManager : MonoBehaviour
                     
                     if (CheckCanNextPlate()) // 처음 밟아보는 발판 !
                     {
-                        // 점수 증가
-                        theScoreManager.IncreaseScore(x);
-                        // 스테이지 생성.
-                        theStageManager.ShowNextPlates();
+                        theScoreManager.IncreaseScore(x); // 점수 증가
+                        theStageManager.ShowNextPlates(); // 스테이지 생성.
                         theEffect.JudgementEffect(x); // perfect ~ good 판정
                         judgementRecord[x]++; // 판정기록
+                        theStatusManager.CheckShield(); // 쉴드체크
                     }
                     else // 이미 한번 밟았던 발판 !
                     {
@@ -106,5 +107,6 @@ public class TimingManager : MonoBehaviour
     public void MissRecord()
     {
         judgementRecord[4]++; // miss 판정기록.
+        theStatusManager.ResetShieldCombo();
     }
 }
