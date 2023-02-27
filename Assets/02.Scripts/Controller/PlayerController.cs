@@ -45,20 +45,24 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        CheckFalling();
-
-        if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.W))
+        if(GameManager.inst.isStartGame)
         {
-            if (canMove && s_canPresskey && !isFalling)
-            {
-                Calc();
+            CheckFalling();
 
-                if (theTimingManager.CheckTiming())
+            if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.W))
+            {
+                if (canMove && s_canPresskey && !isFalling)
                 {
-                    StartAction();
+                    Calc();
+
+                    if (theTimingManager.CheckTiming())
+                    {
+                        StartAction();
+                    }
                 }
             }
         }
+        
     }
     void Calc()
     {
@@ -148,6 +152,7 @@ public class PlayerController : MonoBehaviour
     public void ResetFalling()
     {
         theStatus.DecreaseHp(1);
+        AudioManager.inst.PlaySFX("Falling");
 
         if(!theStatus.IsDead())
         {
