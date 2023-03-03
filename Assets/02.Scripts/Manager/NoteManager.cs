@@ -66,5 +66,7 @@ public class NoteManager : MonoBehaviour
             theTimingManger.boxNoteList[i].gameObject.SetActive(false);
             ObjectPool.inst.noteQueue.Enqueue(theTimingManger.boxNoteList[i]);
         }
+
+        theTimingManger.boxNoteList.Clear();
     }
 }

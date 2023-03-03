@@ -26,6 +26,12 @@ public class ScoreManager : MonoBehaviour
         txtScore.text = "0";
     }
 
+    public void Initialized()
+    {
+        currentScore = 0;
+        txtScore.text = "0";
+    }
+
     public void IncreaseScore(int p_JudgementState)
     {
         // ÄÞº¸ Áõ°¡
