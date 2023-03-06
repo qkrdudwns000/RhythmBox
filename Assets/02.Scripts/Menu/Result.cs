@@ -12,9 +12,12 @@ public class Result : MonoBehaviour
     [SerializeField] TMPro.TMP_Text txtMaxCombo = null;
     [SerializeField] TMPro.TMP_Text txtCoin = null;
 
+    int currentSong = 0; public void SetCurrentSong(int p_songNum) { currentSong = p_songNum; }
+
     ScoreManager theScore;
     ComboManager theCombo;
     TimingManager theTiming;
+    DataBaseManager theDataBase;
 
     // Start is called before the first frame update
     void Start()
@@ -22,6 +25,7 @@ public class Result : MonoBehaviour
         theScore = FindObjectOfType<ScoreManager>();
         theCombo = FindObjectOfType<ComboManager>();
         theTiming = FindObjectOfType<TimingManager>();
+        theDataBase = FindObjectOfType<DataBaseManager>();
     }
 
     public void ShowResult()
@@ -54,6 +58,13 @@ public class Result : MonoBehaviour
         txtScore.text = string.Format("{0:#,##0}", t_currentScore);
         txtMaxCombo.text = string.Format("{0:#,##0}", t_maxCombo);
         txtCoin.text = string.Format("{0:#,##0}", t_coin);
+
+
+        if (t_currentScore > theDataBase.score[currentSong])
+        {
+            theDataBase.score[currentSong] = t_currentScore;
+            theDataBase.SaveScore();
+        }
     }
 
     public void BtnMainMenu()

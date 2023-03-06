@@ -6,6 +6,8 @@ public class CenterFlame : MonoBehaviour
 {
     bool musicStart = false;
 
+    public string bgmName = "";
+
     public void ResetMusic()
     {
         musicStart = false;
@@ -17,7 +19,7 @@ public class CenterFlame : MonoBehaviour
         {
             if (collision.CompareTag("Note"))
             {
-                AudioManager.inst.PlayBGM("BGM0");
+                AudioManager.inst.PlayBGM(bgmName);
                 musicStart = true;
             }
         }
